@@ -5,13 +5,11 @@
 			<li v-text="pagingNowNumberList" style="display: none;"></li>
 			<li class="am-disabled"><a>共{{total}}条</a></li>
 			<li v-on:click="goPage(1)"><a>首页</a></li>
-		  <li><a v-on:click="nextpaging">下一页</a></li>
-		  <li v-for="(item,index) in paging.numberList" :class="paging.activepaging == item ? 'am-active' : ''">
-		  		<a v-on:click="gopaging(item)" style="width: 45.78px;text-align: center;padding-left: 0;padding-right: 0;">{{item}}</a>
-		  </li>
-		  <li class="am-disabled"><a>...</a></li>
-		  <li><a v-on:click="paging.activepaging = max">{{max}}</a></li>
 		  <li><a v-on:click="previouspaging">上一页</a></li>
+		  <li v-for="(item,index) in paging.numberList" :class="paging.activepaging == item ? 'am-active' : ''">
+		  		<a :class="judgeClass(index)" v-on:click="gopaging(item,judgeClass(index))" style="width: 45.78px;text-align: center;padding-left: 0;padding-right: 0;">{{item}}</a>
+		  </li>
+		  <li><a v-on:click="nextpaging">下一页</a></li>
 		  <li v-on:click="goPage(max)"><a>尾页</a></li>
 		  <li>
 			  	<a style="padding: 5.5px 0;">
@@ -27,8 +25,8 @@
 <script>
 export default {
   name: 'paging',
-  //max最大页数 total总共数据条数
-  props : ['max','total'],
+  //max最大页数 total总共数据条数 nowPageOnOff开关 重新跳转到第一页
+  props : ['max','total','nowPageOnOff'],
   data () {
     return {
     	//控制页数的相关对象
@@ -47,6 +45,7 @@ export default {
   computed : {
   		//计算用的paging页 不使用 只是计算每5个插入5个新paging数
 		pagingNowNumberList(){
+			
 			let nowpaging = this.paging.activepaging
 			let pagingList = []
 			//当现在的paging数小于5时，给numberList 1-5个数值
@@ -75,14 +74,33 @@ export default {
 			if(this.paging.nextState == 0){
 				//当现在的paging数余5 等于0时 给实际使用的numberList赋上5个递加值
 				if(nowpaging % 5 == 0){
-					for (var i = 0; i < 6; i++) {
-						pagingList.push(nowpaging++)
+					if(this.max - nowpaging <= 5){
+						var cont = this.max - nowpaging + 1
+						var start = 5 - cont
+						
+						nowpaging = nowpaging - start
+						
+						while (nowpaging % 5 != 0){
+							nowpaging = nowpaging - 1
+						}
+						
+						for (; nowpaging < this.max + 1; i++) {
+							pagingList.push(nowpaging++)
+						}
+						
+						this.paging.numberList = pagingList
+					}else{
+						for (var i = 0; i < 6; i++) {
+							pagingList.push(nowpaging++)
+						}
+						this.paging.numberList = pagingList
 					}
-					this.paging.numberList = pagingList
+					
 				}
 			//当点击上一页时
 			}else{
 				//如果当前页是5 直接赋值 12345
+				
 				if(nowpaging == 5){
 					this.paging.numberList = [1,2,3,4,5]
 				//否则判断余5数是否为零根据自身递减赋值给numberList
@@ -95,10 +113,18 @@ export default {
 					}
 				}
 			}
+			
 			return pagingList
 		}
   },
   created(){
+  		
+  },
+  watch: {
+  		//监听父级nowPageOnOff变化改变当前页码为1 一般用于重新导入新列表
+  		nowPageOnOff : function(val,oldVal){
+  			this.paging.activepaging = 1
+  		}
   },
   updated(){
   },
@@ -113,6 +139,10 @@ export default {
   		},
   		//下一页的点击
   		nextpaging(){
+  			//当点击的页数大于等于最大值
+  			if(this.paging.activepaging >= this.max){
+  				return
+  			}
   			//切换状态为下一页
   			this.paging.nextState = 0
   			let before = this.paging.activepaging
@@ -160,16 +190,31 @@ export default {
   			this.changePage()
   		},
   		//点击页数按钮跳转到相应的页数
-  		gopaging(num){
-  			//根据现在获取的数值如果等于numberList里第一位 就把nextState状态改成 上一页的状态
-  			if(this.paging.numberList[0] == num){
+  		gopaging(num,type){
+  			
+  			if(type == 'left'){
   				this.paging.nextState = 1
-  			//根据现在获取的数值如果等于numberList里第四位 就把nextState状态改成 下一页的状态
-  			}else if(this.paging.numberList[4] == num){
+  				this.paging.activepaging = num
+	  			this.changePage()
+	  			this.pagingNowNumberListMethod('left')
+  			}else if(type == 'right'){
   				this.paging.nextState = 0
+  				this.paging.activepaging = num
+	  			this.changePage()
+	  			this.pagingNowNumberListMethod('right')
+  			}else{
+  				//根据现在获取的数值如果等于numberList里第一位 就把nextState状态改成 上一页的状态
+	  			if(this.paging.numberList[0] == num){
+	  				this.paging.nextState = 1
+	  			//根据现在获取的数值如果等于numberList里第四位 就把nextState状态改成 下一页的状态
+	  			}else if(this.paging.numberList[4] == num){
+	  				this.paging.nextState = 0
+	  			}
+	  			this.paging.activepaging = num
+	  			this.changePage()
   			}
-  			this.paging.activepaging = num
-  			this.changePage()
+  			
+  			
   		},
   		//自定义页数跳转
   		customGoTopaging(){
@@ -207,7 +252,86 @@ export default {
 				}
   			}
   			this.changePage()
-  		}
+  		},
+  		judgeClass(index){
+  			if(index == 0){
+  				return 'left'
+  			}else if(index == (this.paging.numberList.length - 1)){
+  				return 'right'
+  			}
+  		},
+  		//计算用的paging页 不使用 只是计算每5个插入5个新paging数
+		pagingNowNumberListMethod(type){
+			
+			let nowpaging = this.paging.activepaging
+			let pagingList = []
+			//当现在的paging数小于5时，给numberList 1-5个数值
+			
+			//当现在的paging数等于paging最大值时push一个值到numberList
+			if(nowpaging == this.max){
+				this.paging.numberList = [nowpaging - 4,nowpaging-3,nowpaging-2,nowpaging-1,nowpaging]
+				return 
+			}
+			//当点击下一页时 
+			if(this.paging.nextState == 0){
+				//当现在的paging数余5 等于0时 给实际使用的numberList赋上5个递加值
+				if(nowpaging % 5 == 0){
+					if(this.max - nowpaging <= 5){
+						var cont = this.max - nowpaging + 1
+						var start = 5 - cont
+						
+						nowpaging = nowpaging - start
+						
+						while (nowpaging % 5 != 0){
+							nowpaging = nowpaging - 1
+						}
+						
+						for (; nowpaging < this.max + 1; i++) {
+							pagingList.push(nowpaging++)
+						}
+						
+						this.paging.numberList = pagingList
+					}else{
+						for (var i = 0; i < 6; i++) {
+							pagingList.push(nowpaging++)
+						}
+						this.paging.numberList = pagingList
+					}
+					
+				}
+			//当点击上一页时
+			}else{
+				//如果当前页是5 直接赋值 12345
+				
+				if(nowpaging == 5){
+					this.paging.numberList = [1,2,3,4,5]
+				//否则判断余5数是否为零根据自身递减赋值给numberList
+				}else{
+					if(nowpaging % 5 == 0){
+						for (var i = 0; i < 6; i++) {
+							pagingList.unshift(nowpaging--)
+						}
+						this.paging.numberList = pagingList
+					}
+				}
+			}
+			
+			if(type == 'left' && nowpaging > 5 && nowpaging % 5 != 0){
+				
+				for (var i = 0; i < 6; i++) {
+					pagingList.unshift(nowpaging--)
+				}
+				this.paging.numberList = pagingList
+			}else if(type == 'right' && nowpaging < (this.max - 5) && nowpaging % 5 != 0){
+				for (var i = 0; i < 6; i++) {
+					pagingList.push(nowpaging++)
+				}
+				this.paging.numberList = pagingList
+			}
+			
+			
+			this.pagingNowNumberList = pagingList
+		}
   }
 }
 </script>

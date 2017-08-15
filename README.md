@@ -1,6 +1,6 @@
 # vue-paging
 分页 组件
-基于vue-cli 开发的 vue 分页组件 并使用了amazui
+基于vue-cli 开发的 vue 分页组件
 此文件仅是单独.vue 自己导入到vue-cli工程里即可
 # 使用方法
 `<paging :total="orderList.total" :max="orderList.pages" @changePage="changePage"></paging>`

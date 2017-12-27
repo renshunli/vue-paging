@@ -51,7 +51,7 @@
 					customNumber: null,
 					//当前点击的是上一页还是下一页
 					nextState: 0,
-				}
+				},
 			}
 		},
 		computed: {
@@ -80,7 +80,7 @@
 					this.paging.numberList = [nowpaging - 4, nowpaging - 3, nowpaging - 2, nowpaging - 1, nowpaging]
 					return
 				}
-				//当点击下一页时 
+				//当点击下一页时
 				if(this.paging.nextState == 0) {
 					//当现在的paging数余5 等于0时 给实际使用的numberList赋上5个递加值
 					if(nowpaging % 5 == 0) {
@@ -284,7 +284,7 @@
 					this.paging.numberList = [nowpaging - 4, nowpaging - 3, nowpaging - 2, nowpaging - 1, nowpaging]
 					return
 				}
-				//当点击下一页时 
+				//当点击下一页时
 				if(this.paging.nextState == 0) {
 					//当现在的paging数余5 等于0时 给实际使用的numberList赋上5个递加值
 					if(nowpaging % 5 == 0) {
@@ -340,7 +340,7 @@
 					this.paging.numberList = pagingList
 				}
 
-				this.pagingNowNumberList = pagingList
+				// this.pagingNowNumberList = pagingList
 			}
 		}
 	}
@@ -352,7 +352,7 @@
 		cursor: pointer;
 		vertical-align: middle;
 	}
-	
+
 	.am-pagination {
 		padding-left: 0;
 		margin: 1.5rem 0;
@@ -360,21 +360,21 @@
 		color: #999999;
 		text-align: left;
 	}
-	
+
 	.am-pagination:before,
 	.am-pagination:after {
 		content: " ";
 		display: table;
 	}
-	
+
 	.am-pagination:after {
 		clear: both;
 	}
-	
+
 	.am-pagination>li {
 		display: inline-block;
 	}
-	
+
 	.am-pagination>li>a,
 	.am-pagination>li>span {
 		position: relative;
@@ -388,19 +388,19 @@
 		margin-bottom: 5px;
 		margin-right: 5px;
 	}
-	
+
 	.am-pagination>li:last-child>a,
 	.am-pagination>li:last-child>span {
 		margin-right: 0;
 	}
-	
+
 	.am-pagination>li>a:hover,
 	.am-pagination>li>span:hover,
 	.am-pagination>li>a:focus,
 	.am-pagination>li>span:focus {
 		background-color: #eeeeee;
 	}
-	
+
 	.am-pagination>.am-active>a,
 	.am-pagination>.am-active>span,
 	.am-pagination>.am-active>a:hover,
@@ -413,7 +413,7 @@
 		border-color: #0e90d2;
 		cursor: default;
 	}
-	
+
 	.am-pagination>.am-disabled>span,
 	.am-pagination>.am-disabled>span:hover,
 	.am-pagination>.am-disabled>span:focus,
@@ -426,38 +426,38 @@
 		cursor: not-allowed;
 		pointer-events: none;
 	}
-	
+
 	.am-pagination .am-pagination-prev {
 		float: left;
 	}
-	
+
 	.am-pagination .am-pagination-prev a {
 		border-radius: 0;
 	}
-	
+
 	.am-pagination .am-pagination-next {
 		float: right;
 	}
-	
+
 	.am-pagination .am-pagination-next a {
 		border-radius: 0;
 	}
-	
+
 	.am-pagination-centered {
 		text-align: center;
 	}
-	
+
 	.am-pagination-right {
 		text-align: right;
 	}
 	a {
 	    color: #0e90d2;
 	}
-	
+
 	@media only screen and (min-width: 100px) and (max-width: 840px) {
 		a{
 			padding: 7px 2px!important;
 		}
 	}
-	
+
 </style>

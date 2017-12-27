@@ -17,7 +17,7 @@
 
 
 代码例子:
-data(){
+```data(){
     return {
         nowPageOnOff : true,
         list : {
@@ -40,6 +40,6 @@ data(){
             })
         }
     }
-}
+}```
 
 

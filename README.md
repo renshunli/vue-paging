@@ -1,4 +1,8 @@
 # vue-paging
+
+[![license-badge.svg](https://img.shields.io/badge/license-NPL%20(The%20996%20Prohibited%20License)-blue.svg)](./LICENSE)
+
+
 分页 组件
 基于vue-cli 开发的 vue 分页组件
 此文件仅是单独.vue 自己导入到vue-cli工程里即可
